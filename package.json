@@ -1,0 +1,20 @@
+{
+  "name": "datzon-youtube-downloader-web",
+  "version": "1.0.0",
+  "description": "Frontend + backend lokal untuk download YouTube pakai yt-dlp dan FFmpeg.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "youtube",
+    "downloader",
+    "yt-dlp",
+    "ffmpeg",
+    "datzon"
+  ],
+  "author": "DATZON",
+  "license": "MIT"
+}

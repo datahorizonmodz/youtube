@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: datzon-youtube-downloader-web
+    env: docker
+    plan: free
+    autoDeploy: true
