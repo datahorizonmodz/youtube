@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DATZON YouTube Downloader Web</title>
+  <meta name="description" content="Website downloader YouTube lokal berbasis frontend dan backend Node.js dengan yt-dlp dan FFmpeg.">
+  <meta name="theme-color" content="#07111f">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero card">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <path d="M10 9h18c7.2 0 12 4.7 12 11.2S35.2 31.5 28 31.5h-6.4V39H10V9Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M21.4 18.2v8.6l8.2-4.3-8.2-4.3Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <p class="eyebrow">DATZON WEB TOOL</p>
+          <h1>YouTube Downloader</h1>
+        </div>
+      </div>
+
+      <p class="hero-text">Tempel URL YouTube, cek info video, lalu download video atau audio. Backend jalan lokal pakai <b>yt-dlp</b> dan <b>FFmpeg</b>.</p>
+
+      <div class="status-grid" id="healthCards">
+        <article class="mini-card loading">
+          <span class="mini-icon"></span>
+          <div>
+            <b>Backend</b>
+            <small>Mengecek server...</small>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">STEP 01</p>
+          <h2>Masukkan URL</h2>
+        </div>
+        <button class="ghost-btn" id="pasteBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 4h6l1 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2l1-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 11h6M9 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Paste
+        </button>
+      </div>
+
+      <form id="infoForm" class="url-form">
+        <label class="input-wrap">
+          <span>URL YouTube</span>
+          <input id="urlInput" type="url" placeholder="https://youtu.be/xxxx atau https://youtube.com/watch?v=xxxx" autocomplete="off" required>
+        </label>
+        <button class="primary-btn" type="submit">
+          <span>Cek Video</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+
+      <p class="note">Gunakan untuk konten milik sendiri, konten bebas lisensi, atau yang memang lu punya izin download. Internet sudah cukup ribut tanpa nambah perkara.</p>
+    </section>
+
+    <section class="card result hidden" id="resultCard">
+      <div class="video-layout">
+        <div class="thumb-box">
+          <img id="videoThumb" alt="Thumbnail video" loading="lazy">
+        </div>
+        <div class="video-info">
+          <p class="eyebrow">STEP 02</p>
+          <h2 id="videoTitle">Judul video</h2>
+          <div class="meta-row">
+            <span id="videoChannel">Channel</span>
+            <span id="videoDuration">00:00</span>
+            <span id="videoViews">0 views</span>
+          </div>
+          <p id="videoDesc" class="video-desc"></p>
+        </div>
+      </div>
+
+      <form id="downloadForm" class="download-grid">
+        <label class="select-wrap">
+          <span>Mode</span>
+          <select id="modeSelect">
+            <option value="video">Video MP4</option>
+            <option value="audio">Audio MP3</option>
+          </select>
+        </label>
+
+        <label class="select-wrap" id="qualityWrap">
+          <span>Kualitas</span>
+          <select id="qualitySelect">
+            <option value="best">Best Available</option>
+            <option value="1080">1080p</option>
+            <option value="720" selected>720p</option>
+            <option value="480">480p</option>
+            <option value="360">360p</option>
+          </select>
+        </label>
+
+        <label class="check-wrap">
+          <input id="subtitleCheck" type="checkbox">
+          <span>Ambil subtitle ID/EN kalau tersedia</span>
+        </label>
+
+        <button class="primary-btn download-btn" type="submit">
+          <span>Mulai Download</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3v12m0 0 5-5m-5 5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </form>
+    </section>
+
+    <section class="card job hidden" id="jobCard">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">STEP 03</p>
+          <h2>Status Download</h2>
+        </div>
+        <span class="pill" id="jobStatus">Idle</span>
+      </div>
+
+      <div class="progress-box">
+        <div class="progress-info">
+          <span id="progressText">0%</span>
+          <small id="speedText">Menunggu...</small>
+        </div>
+        <div class="bar"><i id="progressBar"></i></div>
+      </div>
+
+      <div class="actions-row">
+        <a class="primary-btn hidden" id="fileDownloadBtn" href="#" download>
+          <span>Download File</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 4v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </a>
+        <button class="ghost-btn" id="clearBtn" type="button">Bersihkan Job Lama</button>
+      </div>
+
+      <pre id="logBox" class="log-box">Belum ada log.</pre>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
